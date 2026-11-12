@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+.env*
+!.env.example
+private/*.pdf
+!private/.gitkeep
+test-results/
+playwright-report/
+coverage/
+*.tsbuildinfo
+*.log

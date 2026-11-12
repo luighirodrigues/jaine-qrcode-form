@@ -1,0 +1,40 @@
+name: jaine-qrcode
+
+services:
+  db:
+    image: postgres:17-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?Configure POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Configure POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:?Configure POSTGRES_DB}
+      TZ: UTC
+      PGTZ: UTC
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5437}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 3s
+      timeout: 3s
+      retries: 15
+
+  app:
+    profiles: ["app"]
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DOCKER_DATABASE_URL:?Configure DOCKER_DATABASE_URL}
+      APP_URL: ${APP_URL:?Configure APP_URL}
+      DOWNLOAD_COOKIE_SECRET: ${DOWNLOAD_COOKIE_SECRET:?Configure DOWNLOAD_COOKIE_SECRET}
+      PDF_PATH: /app/private/material.pdf
+      PDF_DOWNLOAD_NAME: ${PDF_DOWNLOAD_NAME:-material-jaine.pdf}
+    volumes:
+      - ${PDF_PATH:-./private/material-demo.pdf}:/app/private/material.pdf:ro
+
+volumes:
+  postgres_data:
