@@ -4,7 +4,7 @@ Data: 12/11/2026.
 
 ## Resultado
 
-Aplicação local implementada e verificada com PostgreSQL real. O formulário registra os dados antes da liberação, abre a confirmação e entrega o PDF por rota autorizada. O arquivo disponível nesta etapa é identificado como demonstração.
+Aplicação local implementada e verificada com PostgreSQL real. O formulário registra os dados antes da liberação, abre a confirmação e entrega o PDF por rota autorizada. A verificação inicial usou um arquivo de demonstração; o Guia MEI 2026 fornecido depois pelo solicitante já está incluído na aplicação.
 
 | Verificação executada | Resultado |
 | --- | --- |
@@ -50,10 +50,25 @@ Os dados fictícios gerados pelos testes foram removidos por suas chaves. Um reg
 
 ## Pendências de publicação
 
-1. Receber o PDF definitivo e aprovar nome/descrição do material.
-2. Aprovar o texto final sobre finalidade e uso dos contatos.
-3. Configurar domínio HTTPS, hospedagem e PostgreSQL de produção, incluindo backup.
-4. Gerar o QR Code da URL definitiva e conferir sua leitura no tamanho de impressão.
-5. Testar a experiência em iPhone/Safari e Android/Chrome físicos, incluindo a ação de salvar o arquivo.
+1. Aprovar os textos finais do material, da finalidade do cadastro e do uso dos contatos.
+2. Configurar domínio HTTPS, hospedagem e PostgreSQL de produção, incluindo backup.
+3. Gerar o QR Code da URL definitiva e conferir sua leitura no tamanho de impressão.
+4. Testar a experiência em iPhone/Safari e Android/Chrome físicos, incluindo a ação de salvar o arquivo.
 
 Não houve publicação externa. A emulação Chromium não equivale a teste em aparelhos físicos. O servidor não comprova que um PDF entregue foi salvo no telefone.
+
+## Atualização: PDF definitivo incluído no Git e no Docker
+
+Em 12/11/2026, o solicitante forneceu `docs/Guia_MEI_2026.pdf` e autorizou seu envio ao GitHub. O Dockerfile agora copia esse arquivo para `/app/private/material.pdf`, com `PDF_PATH` e nome de download definidos na imagem. O Compose usa o arquivo da própria imagem, sem bind/volume do PDF.
+
+Verificações desta atualização:
+
+- 65 testes unitários passaram novamente, e a checagem TypeScript concluiu sem erros.
+- Build de produção local e build Docker concluídos.
+- Container iniciado sem mounts; inspeção Docker confirmou lista vazia.
+- Sem cookie, `/api/download` redirecionou para o formulário. Os caminhos públicos `/Guia_MEI_2026.pdf`, `/docs/Guia_MEI_2026.pdf` e `/private/material.pdf` retornaram 404.
+- Após um cadastro fictício salvo no PostgreSQL, a rota entregou o nome `Guia_MEI_2026.pdf` e 4.499.799 bytes idênticos ao arquivo original.
+- SHA-256 do arquivo recebido: `a11593fa8ebfd4917040f72da0c4a844207972e4964d2af2404224f6b4449d39`.
+- O registro fictício desta verificação foi removido pela sua chave; o container temporário foi encerrado.
+
+A atualização dispensa a montagem do arquivo no EasyPanel. As instruções atuais estão em `docs/EASYPANEL.md`.

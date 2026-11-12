@@ -11,7 +11,6 @@ npm ci
 npm run setup:local
 npm run db:up
 npm run db:migrate
-npm run demo:pdf
 npm run dev
 ```
 
@@ -36,7 +35,7 @@ Use `.env.example` como referência; mantenha os valores reais fora do repositó
 | `POSTGRES_PORT` | Porta local publicada pelo banco de teste |
 | `DOCKER_DATABASE_URL` | Conexão usada pela aplicação dentro do container; pode apontar para seu PostgreSQL próprio |
 | `APP_URL` | Origem exata da aplicação, por exemplo `https://material.seudominio.com`; usada para validar os envios e redirecionar |
-| `PDF_PATH` | Caminho privado do arquivo no servidor; no Compose é o arquivo do host montado no container |
+| `PDF_PATH` | Local: `./docs/Guia_MEI_2026.pdf`. Na imagem Docker: `/app/private/material.pdf` |
 | `PDF_DOWNLOAD_NAME` | Nome sugerido ao baixar o arquivo |
 | `DOWNLOAD_COOKIE_SECRET` | Segredo aleatório de pelo menos 32 caracteres; trocar invalida liberações anteriores |
 
@@ -46,12 +45,14 @@ Em produção use HTTPS. O cookie é `HttpOnly`, `SameSite=Lax`, válido por uma
 
 ## Trocar o material e os textos
 
-O arquivo gerado por `npm run demo:pdf` é somente demonstração, identificado dentro do próprio PDF.
+O PDF definitivo está em `docs/Guia_MEI_2026.pdf`, versionado no GitHub. O Dockerfile inclui esse arquivo em `/app/private/material.pdf`, fora da pasta pública, para servir pela rota de download autorizada. No EasyPanel não é necessário configurar um mount para o PDF.
 
-1. Coloque o material definitivo em uma pasta privada, fora de `public`.
-2. Ajuste `PDF_PATH` e `PDF_DOWNLOAD_NAME` no ambiente.
-3. Edite os textos do material e o aviso sobre os dados em `src/lib/site-content.ts`, com a finalidade real aprovada pela responsável.
-4. Reinicie a aplicação após mudar variáveis; mudanças nos textos exigem novo build de produção.
+1. Para trocar o material, substitua `docs/Guia_MEI_2026.pdf` e envie a alteração ao GitHub.
+2. Faça novo deploy para reconstruir a imagem com o arquivo atualizado. Se mudar o nome do PDF no repositório, ajuste o `COPY` no Dockerfile.
+3. `PDF_DOWNLOAD_NAME` define o nome sugerido ao usuário; na imagem o padrão é `Guia_MEI_2026.pdf`. `PDF_PATH` aponta para o arquivo a ser lido.
+4. Os textos do material e o aviso sobre os dados ficam em `src/lib/site-content.ts`; mudanças exigem novo build de produção.
+
+O comando `npm run demo:pdf` continua disponível para gerar um PDF de demonstração separado, quando necessário para testes; o fluxo padrão usa o Guia MEI 2026.
 
 A logo original está em `docs/logo.png`. A cópia em `public/logo.png` mantém o arquivo original; a composição CSS enquadra as margens transparentes sem redesenhar ou remover elementos da marca.
 
@@ -87,7 +88,7 @@ Os testes de navegador usam emulação mobile no Chromium. Eles não substituem 
 
 ## Container da aplicação
 
-O Dockerfile faz build multi-stage e executa o Next standalone com usuário sem privilégios. O PDF é montado somente para leitura; nenhum segredo ou PDF privado é incorporado à imagem.
+O Dockerfile faz build multi-stage e executa o Next standalone com usuário sem privilégios. O Guia MEI 2026 está incluído em um caminho privado da imagem. Credenciais e segredos são fornecidos pelo ambiente e não entram na imagem.
 
 ```powershell
 docker compose --env-file .env.local build app
@@ -104,9 +105,9 @@ Configure backup do banco na sua hospedagem antes de receber contatos reais. A i
 
 ## Publicar e gerar o QR Code
 
-Para hospedar no EasyPanel, siga o guia em [docs/EASYPANEL.md](docs/EASYPANEL.md), com origem GitHub, Dockerfile, variáveis, mount do PDF e migração.
+Para hospedar no EasyPanel, siga o guia em [docs/EASYPANEL.md](docs/EASYPANEL.md), com origem GitHub, Dockerfile, variáveis e migração. O PDF já acompanha a aplicação.
 
-Ainda são necessários o PDF definitivo, descrição do material, texto final de uso dos dados, domínio, hospedagem e conexão de produção. Depois de disponibilizar a URL HTTPS definitiva, gere um QR Code preto sobre branco apontando para a raiz do site e confira a leitura no tamanho de impressão.
+O PDF definitivo e o nome do material já foram fornecidos. Ainda são necessários a aprovação dos textos, domínio, hospedagem e conexão de produção. Depois de disponibilizar a URL HTTPS definitiva, gere um QR Code preto sobre branco apontando para a raiz do site e confira a leitura no tamanho de impressão.
 
 A liberação exige cadastro salvo. O servidor entrega o PDF por rota autorizada, sem URL pública direta, e permite novas tentativas dentro de uma hora. O navegador decide se baixa ou abre o arquivo, e a aplicação não consegue comprovar que ele foi salvo no telefone.
 

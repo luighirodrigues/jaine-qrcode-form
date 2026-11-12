@@ -32,9 +32,7 @@ services:
       APP_URL: ${APP_URL:?Configure APP_URL}
       DOWNLOAD_COOKIE_SECRET: ${DOWNLOAD_COOKIE_SECRET:?Configure DOWNLOAD_COOKIE_SECRET}
       PDF_PATH: /app/private/material.pdf
-      PDF_DOWNLOAD_NAME: ${PDF_DOWNLOAD_NAME:-material-jaine.pdf}
-    volumes:
-      - ${PDF_PATH:-./private/material-demo.pdf}:/app/private/material.pdf:ro
+      PDF_DOWNLOAD_NAME: ${PDF_DOWNLOAD_NAME:-Guia_MEI_2026.pdf}
 
 volumes:
   postgres_data:

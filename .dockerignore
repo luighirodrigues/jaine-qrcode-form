@@ -5,5 +5,6 @@ node_modules
 private
 test-results
 playwright-report
-docs
+docs/**
+!docs/Guia_MEI_2026.pdf
 tests

@@ -25,7 +25,7 @@ NODE_ENV=production
 DATABASE_URL=postgresql://USUARIO:SENHA@HOST_DO_POSTGRES:5432/BANCO
 APP_URL=https://material.seudominio.com
 PDF_PATH=/app/private/material.pdf
-PDF_DOWNLOAD_NAME=material-jaine.pdf
+PDF_DOWNLOAD_NAME=Guia_MEI_2026.pdf
 DOWNLOAD_COOKIE_SECRET=SUBSTITUA_POR_UM_SEGREDO_ALEATORIO
 ```
 
@@ -34,20 +34,20 @@ DOWNLOAD_COOKIE_SECRET=SUBSTITUA_POR_UM_SEGREDO_ALEATORIO
 - Gere um segredo aleatório de pelo menos 32 caracteres para `DOWNLOAD_COOKIE_SECRET`. Por exemplo, em um terminal Node: `node -e "console.log(require('node:crypto').randomBytes(48).toString('hex'))"`. Guarde o resultado somente no ambiente do painel.
 - As variáveis `POSTGRES_*` e `DOCKER_DATABASE_URL` do Compose local não são necessárias para o serviço App; ele usa diretamente `DATABASE_URL`.
 
-## 3. Disponibilizar o PDF
+## 3. PDF incluído na aplicação
 
-O PDF fica fora da imagem Docker e não é enviado ao GitHub.
+O arquivo `docs/Guia_MEI_2026.pdf` é versionado no repositório e copiado pelo Dockerfile para `/app/private/material.pdf`. Ele já acompanha a imagem de produção; não é necessário enviar o arquivo à VPS nem configurar Storage/Bind.
 
-Envie o arquivo definitivo para um caminho privado no seu servidor. Em **Storage**, configure um mount **Bind** desse arquivo para `/app/private/material.pdf`, com acesso somente de leitura quando disponível. Garanta que o usuário do container, UID 1001, consiga ler o arquivo. O destino precisa coincidir com `PDF_PATH`.
+O PDF fica fora da pasta pública. O site entrega o arquivo somente por `/api/download`, após validar a autorização emitida depois do cadastro.
 
-O mount mantém o arquivo acessível após recriar o serviço. O EasyPanel oferece armazenamento persistente e exige nova implantação ao alterar mounts. [Documentação de armazenamento](https://easypanel.io/docs/services/app#storage).
+Se você configurou um mount em `/app/private` ou `/app/private/material.pdf` seguindo a instrução anterior, remova-o para usar o arquivo incluído na imagem; um mount sobre esse caminho encobre o PDF da aplicação.
 
-Sem o arquivo, o cadastro ainda é salvo, mas a confirmação informa que o material está indisponível e permite tentar novamente.
+Para atualizar o material, substitua `docs/Guia_MEI_2026.pdf`, envie o commit ao GitHub e faça novo deploy. Se mudar o nome do arquivo na origem, ajuste também o `COPY` correspondente no Dockerfile. `PDF_DOWNLOAD_NAME` controla o nome apresentado ao usuário.
 
 ## 4. Domínio, deploy e migração
 
 1. Configure o domínio com HTTPS e **porta interna 3000**. A imagem escuta em `0.0.0.0:3000`.
-2. Execute o deploy com as variáveis e o mount configurados.
+2. Execute o deploy com as variáveis configuradas. O PDF já estará na imagem.
 3. Abra o **Shell** do serviço e execute, antes de receber cadastros:
 
    ```sh
@@ -63,8 +63,8 @@ O Dockerfile já define o comando de inicialização; não é preciso substituí
 
 ## Antes de divulgar
 
-- Substitua os textos genéricos do material em `src/lib/site-content.ts` e aprove o aviso de uso dos contatos com a responsável.
-- Use o PDF definitivo e configure o backup do PostgreSQL na sua infraestrutura.
+- Aprove os textos do material e o aviso de uso dos contatos em `src/lib/site-content.ts` com a responsável.
+- Configure o backup do PostgreSQL na sua infraestrutura.
 - Confira o fluxo em iPhone/Safari e Android/Chrome e teste a leitura do QR Code impresso.
 
 O envio ao GitHub disponibiliza o código. A configuração e a implantação no seu EasyPanel são realizadas no seu servidor.
