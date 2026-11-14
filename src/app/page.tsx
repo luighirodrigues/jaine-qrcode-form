@@ -1,5 +1,6 @@
 import { BrandHeader, Footer } from "@/components/brand";
 import { LeadForm } from "@/components/lead-form";
+import { QrDisplay } from "@/components/qr-display";
 import { siteContent } from "@/lib/site-content";
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
@@ -13,5 +14,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ s
       <LeadForm />
       <Footer />
     </main>
+    <QrDisplay />
   </div>;
 }

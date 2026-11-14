@@ -2,6 +2,12 @@
 
 Formulário mobile para registrar nome, telefone e e-mail no PostgreSQL e liberar um PDF privado. Fluxo: QR Code → formulário → confirmação → **Baixar PDF**.
 
+## Exibir o QR Code em um tablet
+
+Na página inicial, toque no pequeno ícone de QR Code no canto inferior direito da página, ao lado do rodapé. Ele abre um painel que ocupa a janela com um QR Code grande, apontando para a página inicial do endereço em que o site está aberto.
+
+O código se ajusta automaticamente ao girar o tablet entre retrato e paisagem. Para voltar ao formulário, toque no botão de fechar no canto superior direito ou pressione Escape no teclado. Os campos já preenchidos são preservados. Nenhuma variável de ambiente adicional é necessária.
+
 ## Rodar localmente
 
 Requisitos: Node.js 24 e Docker com Compose. Comandos a partir da raiz do projeto:

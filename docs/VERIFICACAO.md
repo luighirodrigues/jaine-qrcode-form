@@ -72,3 +72,17 @@ Verificações desta atualização:
 - O registro fictício desta verificação foi removido pela sua chave; o container temporário foi encerrado.
 
 A atualização dispensa a montagem do arquivo no EasyPanel. As instruções atuais estão em `docs/EASYPANEL.md`.
+
+## Atualização de 13/11/2026: QR Code para exibição em tablet
+
+- Ícone discreto no canto inferior direito da página inicial abre um diálogo que ocupa a janela com QR Code preto sobre branco, centralizado e com margem de leitura.
+- O código aponta para a raiz da origem atual, sem parâmetros da URL, cadastro ou download direto do PDF. Nenhuma variável nova foi adicionada.
+- O painel redimensiona ao girar o tablet, fecha por botão ou Escape e preserva os campos do formulário e o retorno do foco.
+- Foram escritos três testes de navegador antes da implementação; o primeiro falhou pela ausência do botão e passou após a implementação.
+- Capturas do SVG foram decodificadas com jsQR nos testes, confirmando a URL esperada. O SVG mediu 720×720 px no viewport 768×1024 e aproximadamente 667×667 px no viewport 1024×768.
+- Verificação em tela curta deitada, 844×390, sem corte do QR ou do botão de fechar.
+- Passaram 65 testes unitários e 12 testes de navegador (os nove existentes mais os três novos), além do TypeScript e do build de produção.
+- Capturas mobile, tablet em retrato e tablet em paisagem foram inspecionadas; console sem erros.
+- Revisão independente de aderência e qualidade aprovada.
+
+Os tamanhos acima são de emulação no Chromium, sem teste físico de tablet nesta etapa. Para disponibilizar a atualização na hospedagem, fazer novo deploy da branch `main`.

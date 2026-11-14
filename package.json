@@ -23,6 +23,7 @@
     "@next/env": "16.4.6",
     "next": "16.4.6",
     "pg": "8.23.1",
+    "qrcode.react": "4.2.0",
     "react": "19.3.1",
     "react-dom": "19.3.1"
   },
@@ -30,8 +31,11 @@
     "@playwright/test": "1.65.0",
     "@types/node": "24.19.2",
     "@types/pg": "8.23.1",
+    "@types/pngjs": "6.0.5",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "jsqr": "1.4.0",
+    "pngjs": "7.0.0",
     "tsx": "4.23.15",
     "typescript": "5.9.3",
     "vitest": "5.1.0"

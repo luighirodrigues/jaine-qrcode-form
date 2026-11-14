@@ -1,6 +1,6 @@
 import type { SVGProps } from "react";
 
-type IconName = "person" | "phone" | "email" | "lock" | "download" | "check" | "file";
+type IconName = "person" | "phone" | "email" | "lock" | "download" | "check" | "file" | "qr" | "close";
 
 export function Icon({ name, ...props }: SVGProps<SVGSVGElement> & { name: IconName }) {
   const paths = {
@@ -11,6 +11,8 @@ export function Icon({ name, ...props }: SVGProps<SVGSVGElement> & { name: IconN
     download: <><path d="M12 3v12m-5-5 5 5 5-5M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4" /></>,
     check: <path d="m5 12 4.5 4.5L19 7" />,
     file: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z" /><path d="M14 2v6h6M8 13h8M8 17h5" /></>,
+    qr: <><rect x="3" y="3" width="6" height="6" rx=".5" /><rect x="15" y="3" width="6" height="6" rx=".5" /><rect x="3" y="15" width="6" height="6" rx=".5" /><path d="M15 15h3v3h3v3h-6v-3m6-3v-3M12 3v3m0 6H9m-6 0h3m6 3v6" /></>,
+    close: <path d="m6 6 12 12M18 6 6 18" />,
   };
   return <svg className="icon" viewBox="0 0 24 24" aria-hidden="true" {...props}>{paths[name]}</svg>;
 }
